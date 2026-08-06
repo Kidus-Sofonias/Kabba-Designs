@@ -4,10 +4,15 @@
 // your backend base URL, e.g.:
 //   VITE_API_URL=https://your-api.example.com/api
 // If it is not set, we fall back to the current production backend.
-const API_BASE_URL = (
+//
+// The backend always serves under /api, so we normalize whatever is provided
+// (with or without the trailing /api suffix) to always include it.
+const _rawApiUrl = (
   import.meta.env.VITE_API_URL ||
   "https://kabba-designs.onrender.com/api"
 ).replace(/\/+$/, "");
+
+const API_BASE_URL = _rawApiUrl.endsWith("/api") ? _rawApiUrl : `${_rawApiUrl}/api`;
 
 // The origin of the API (without the /api suffix), used to prefix
 // backend-relative image paths such as "/uploads/abc.png".
