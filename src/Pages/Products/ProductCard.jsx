@@ -28,47 +28,50 @@ function ProductCard({ product }) {
     });
 
   return (
-    <div className="card shadow-sm h-100">
-      {image ? (
-        <img
-          src={imageUrl(image)}
-          className="card-img-top"
-          alt={product.name}
-          style={{ height: 220, objectFit: "cover" }}
-        />
-      ) : (
-        <div style={{ height: 200, background: "var(--panel)" }} />
-      )}
-      <div className="card-body d-flex flex-column">
-        <h5 className="card-title">{product.name}</h5>
-        <p className="card-text product-price">
+    <div className="product-card">
+      <Link to={`/products/${product.id}`} className="product-image">
+        {image ? (
+          <img
+            src={imageUrl(image)}
+            alt={product.name}
+          />
+        ) : (
+          <div style={{ height: 320, background: "var(--panel)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 40, color: "var(--muted)" }}>
+            📷
+          </div>
+        )}
+      </Link>
+      <div className="product-info">
+        <Link to={`/products/${product.id}`} style={{ textDecoration: "none", color: "var(--text)" }}>
+          <div style={{ fontWeight: 600, fontSize: 15, marginBottom: 4, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>{product.name}</div>
+        </Link>
+        <div style={{ color: "var(--accent)", fontWeight: 700, fontSize: 16 }}>
           Birr {Number(product.price_birr || 0).toLocaleString()}
-        </p>
-        <div className="d-flex gap-2 align-items-center flex-wrap mt-auto">
+        </div>
+        <div style={{ display: "flex", gap: 6, marginTop: 8 }}>
+          {outOfStock ? (
+            <span style={{ fontSize: 11, fontWeight: 600, padding: "3px 8px", borderRadius: 6, background: "rgba(239,68,68,0.15)", color: "#ef4444" }}>Out of Stock</span>
+          ) : (
+            <span style={{ fontSize: 11, fontWeight: 600, padding: "3px 8px", borderRadius: 6, background: "rgba(34,197,94,0.15)", color: "#22c55e" }}>In Stock</span>
+          )}
+        </div>
+        <div style={{ display: "flex", gap: 8, marginTop: 8 }}>
           {inCart ? (
             <button
-              className="btn btn-outline-light"
+              style={{ flex: 1, padding: "8px 12px", borderRadius: 8, border: "1px solid var(--border)", background: "transparent", color: "var(--text)", fontSize: 13, fontWeight: 600, cursor: "pointer" }}
               onClick={() => removeItem(product.id)}
             >
               Remove
             </button>
           ) : (
             <button
-              className="btn btn-accent"
+              style={{ flex: 1, padding: "8px 12px", borderRadius: 8, border: "none", background: "linear-gradient(135deg, var(--accent), var(--accent-2))", color: "var(--on-accent)", fontSize: 13, fontWeight: 600, cursor: "pointer" }}
               onClick={handleAdd}
               disabled={outOfStock}
             >
-              {outOfStock ? "Out of Stock" : "Add to Cart"}
+              Add to Cart
             </button>
           )}
-          {outOfStock ? (
-            <span className="badge bg-danger">Out of Stock</span>
-          ) : (
-            <span className="badge bg-success">In Stock</span>
-          )}
-          <Link to={`/products/${product.id}`} className="btn btn-outline-light">
-            View Details
-          </Link>
         </div>
       </div>
     </div>

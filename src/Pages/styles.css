@@ -1,70 +1,159 @@
 .category-detail {
-  padding-top: 90px; /* clear the fixed-top navbar now shown on category pages */
+  padding-top: 90px;
+  min-height: 100vh;
+  background: var(--bg);
 }
 
 .row-section {
   display: flex;
   flex-wrap: nowrap;
-  align-items: flex-start;
+  align-items: center;
   justify-content: center;
   gap: 60px;
   margin-bottom: 80px;
+  padding: 0 20px;
+}
+
+.row-section.reverse {
+  flex-direction: row-reverse;
 }
 
 .image-stack {
   position: relative;
   width: 100%;
-  max-width: 350px;
+  max-width: 380px;
   margin-bottom: 30px;
 }
 
 .img-main {
   width: 100%;
-  border: 8px solid var(--accent);
-  border-radius: 6px;
+  aspect-ratio: 3/4;
+  object-fit: cover;
+  border: 6px solid var(--accent);
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
 }
 
 .img-overlay {
   position: absolute;
-  width: 75%;
-  top: 250px;
-  left: 100px;
-  border: 6px solid var(--accent);
-  border-radius: 6px;
+  width: 65%;
+  bottom: -20px;
+  right: -20px;
+  border: 5px solid var(--accent);
+  border-radius: 10px;
   z-index: 2;
-  background-color: white;
+  background-color: var(--panel);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
   transition: all 0.3s ease;
 }
 
 .img-bottom {
-  width: 85%;
-  margin-top: 140px;
-  border: 6px solid black;
-  border-radius: 6px;
+  width: 70%;
+  margin-top: -60px;
+  border: 5px solid var(--accent);
+  border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
 }
 
 .text-section {
   flex: 1;
-  max-width: 600px;
-  padding-top: 40px;
+  max-width: 550px;
+  padding-top: 20px;
 }
 
 .text-section h3 {
   font-size: 2rem;
   font-weight: 700;
   margin-bottom: 20px;
+  color: var(--text);
 }
 
 .text-section p {
-  font-size: 1.15rem;
+  font-size: 1.1rem;
   line-height: 1.8;
-  margin-bottom: 20px;
+  margin-bottom: 24px;
+  color: var(--muted);
 }
 
 .text-section .btn {
-  padding: 10px 24px;
+  padding: 12px 28px;
+  font-weight: 600;
+  border-radius: 10px;
 }
 
+.text-section .btn-accent {
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  color: var(--on-accent);
+}
+
+.text-section .btn-warning {
+  background: var(--accent);
+  color: var(--on-accent);
+}
+
+/* Yellow/black frame variants */
+.yellow-frame {
+  border-color: var(--accent) !important;
+}
+
+.black-frame {
+  border-color: var(--panel-2) !important;
+}
+
+/* Highlight boxes for dark theme */
+.highlight-box {
+  background: var(--panel);
+  border-left: 4px solid var(--accent);
+  border-radius: 8px;
+  color: var(--text);
+  padding: 20px;
+  margin-bottom: 16px;
+}
+
+.highlight-box h5 {
+  color: var(--accent);
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.highlight-box p {
+  color: var(--muted);
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+/* Image shadows */
+.img-main, .img-overlay, .img-bottom {
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+}
+
+/* Back button */
+.category-detail .btn {
+  transition: all 0.2s ease;
+}
+
+.category-detail .btn:hover {
+  transform: translateY(-1px);
+}
+
+/* ── Tablet ── */
+@media (max-width: 992px) {
+  .row-section {
+    gap: 40px;
+    padding: 0 16px;
+  }
+
+  .text-section h3 {
+    font-size: 1.6rem;
+  }
+
+  .text-section p {
+    font-size: 1rem;
+  }
+}
+
+/* ── Mobile ── */
 @media (max-width: 768px) {
   .row-section,
   .row-section.reverse {
@@ -87,11 +176,24 @@
     position: static !important;
     width: 100% !important;
     margin: 0 0 15px 0;
-    border-radius: 6px;
+    border-radius: 10px;
+    aspect-ratio: 3/4;
+  }
+
+  .img-bottom {
+    margin-top: 0;
   }
 
   .text-section {
     text-align: center;
-    padding: 0 10px;
+    padding: 0 16px;
+  }
+
+  .text-section h3 {
+    font-size: 1.4rem;
+  }
+
+  .text-section p {
+    font-size: 0.95rem;
   }
 }

@@ -50,7 +50,7 @@ export default function ProductList() {
 
   return (
     <div className="container mt-5 py-4" style={{ minHeight: "60vh" }}>
-      <h2 className="mb-4 text-center">Our Products</h2>
+      <h2 className="mb-4 text-center" style={{ color: "var(--text)", fontWeight: 700 }}>Our Products</h2>
 
       {categories.length > 1 && (
         <div className="d-flex justify-content-center flex-wrap gap-2 mb-4">

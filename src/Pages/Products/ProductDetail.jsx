@@ -66,51 +66,53 @@ function ProductDetail() {
     });
 
   return (
-    <div className="container py-5">
-      <Link to="/products" className="muted text-decoration-none d-inline-block mb-3">
+    <div className="container py-5" style={{ minHeight: "80vh" }}>
+      <Link to="/products" style={{ color: "var(--muted)", textDecoration: "none", display: "inline-flex", alignItems: "center", gap: 6, marginBottom: 24, fontSize: 14 }}>
         ← Back to Products
       </Link>
-      <div className="row">
+      <div className="row g-5">
         <div className="col-md-6">
           {image ? (
             <img
               src={imageUrl(image)}
-              className="img-fluid rounded"
               alt={product.name}
+              style={{ width: "100%", aspectRatio: "3/4", objectFit: "cover", borderRadius: 16, border: "1px solid var(--border)" }}
             />
           ) : (
-            <div style={{ height: 300, background: "var(--panel)" }} />
+            <div style={{ height: 400, background: "var(--panel)", borderRadius: 16, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 48, color: "var(--muted)" }}>
+              📷
+            </div>
           )}
         </div>
-        <div className="col-md-6">
-          <h2>{product.name}</h2>
-          <p className="muted">{product.description}</p>
-          <p>
-            <strong className="fs-4">
-              Birr {Number(product.price_birr || 0).toLocaleString()}
-            </strong>
-          </p>
-          <div className="d-flex gap-2 align-items-center flex-wrap">
+        <div className="col-md-6" style={{ display: "flex", flexDirection: "column", justifyContent: "center" }}>
+          <h2 style={{ fontWeight: 700, color: "var(--text)", marginBottom: 16 }}>{product.name}</h2>
+          <p style={{ color: "var(--muted)", fontSize: 15, lineHeight: 1.7, marginBottom: 20 }}>{product.description}</p>
+          <div style={{ fontSize: 28, fontWeight: 800, color: "var(--accent)", marginBottom: 24 }}>
+            Birr {Number(product.price_birr || 0).toLocaleString()}
+          </div>
+          <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap", marginBottom: 24 }}>
+            {Number(product.quantity || 0) === 0 ? (
+              <span style={{ fontSize: 12, fontWeight: 600, padding: "4px 12px", borderRadius: 20, background: "rgba(239,68,68,0.15)", color: "#ef4444" }}>Out of Stock</span>
+            ) : (
+              <span style={{ fontSize: 12, fontWeight: 600, padding: "4px 12px", borderRadius: 20, background: "rgba(34,197,94,0.15)", color: "#22c55e" }}>In Stock</span>
+            )}
+          </div>
+          <div style={{ display: "flex", gap: 12 }}>
             {inCart ? (
               <button
-                className="btn btn-outline-light"
+                style={{ padding: "12px 28px", borderRadius: 10, border: "1px solid var(--border)", background: "transparent", color: "var(--text)", fontSize: 15, fontWeight: 600, cursor: "pointer" }}
                 onClick={() => removeItem(product.id)}
               >
                 Remove from Cart
               </button>
             ) : (
               <button
-                className="btn btn-accent"
+                style={{ padding: "12px 28px", borderRadius: 10, border: "none", background: "linear-gradient(135deg, var(--accent), var(--accent-2))", color: "var(--on-accent)", fontSize: 15, fontWeight: 600, cursor: "pointer" }}
                 onClick={handleAdd}
                 disabled={Number(product.quantity || 0) === 0}
               >
                 Add to Cart
               </button>
-            )}
-            {Number(product.quantity || 0) === 0 ? (
-              <span className="badge bg-danger">Out of Stock</span>
-            ) : (
-              <span className="badge bg-success">In Stock</span>
             )}
           </div>
         </div>
