@@ -23,7 +23,18 @@ const allowedOrigins = [
   "https://kabbadesign.com.et",
   "https://www.kabbadesign.com.et",
   "https://checkout.chapa.co",
+  "https://kabba-designs.vercel.app",
+  "https://www.kabba-designs.vercel.app",
 ];
+
+// Extra origins can be allowed without a code change, e.g.:
+//   CORS_ORIGINS=https://my-store.vercel.app,https://admin.example.com
+if (process.env.CORS_ORIGINS) {
+  for (const origin of process.env.CORS_ORIGINS.split(",")) {
+    const trimmed = origin.trim();
+    if (trimmed && !allowedOrigins.includes(trimmed)) allowedOrigins.push(trimmed);
+  }
+}
 
 app.use(
   cors({

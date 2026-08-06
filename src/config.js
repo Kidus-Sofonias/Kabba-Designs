@@ -6,7 +6,7 @@
 // If it is not set, we fall back to the current production backend.
 const API_BASE_URL = (
   import.meta.env.VITE_API_URL ||
-  "https://kabba-designs-server.onrender.com/api"
+  "https://kabba-designs.onrender.com/api"
 ).replace(/\/+$/, "");
 
 // The origin of the API (without the /api suffix), used to prefix

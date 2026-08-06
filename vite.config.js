@@ -6,7 +6,7 @@ export default defineConfig({
   plugins: [react()],
   server: {
     proxy: {
-      "/api": "https://kabba-designs-server.onrender.com",
+      "/api": "https://kabba-designs.onrender.com",
     },
   },
 });
