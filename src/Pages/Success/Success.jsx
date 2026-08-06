@@ -16,9 +16,11 @@ export default function Success() {
       return;
     }
 
-    // Confirm the payment server-side (never trust the client alone).
+    // Verify payment AND create order if the webhook missed it.
+    // The /verify-and-create endpoint checks Chapa + creates the order
+    // from orders_temp if it doesn't exist yet.
     api
-      .post("/chapa/verify", { tx_ref: txRef })
+      .post("/chapa/verify-and-create", { tx_ref: txRef })
       .then(({ data }) => {
         if (data.status === "success") {
           clearCart();

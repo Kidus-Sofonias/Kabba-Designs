@@ -8,7 +8,7 @@ exports.loginAdmin = (req, res) => {
 
   if (email === presetEmail && password === presetPassword) {
     const token = jwt.sign({ role: "admin" }, process.env.JWT_SECRET, {
-      expiresIn: 43200, // 12 hours in seconds
+      expiresIn: "7d", // 7 days — admin stays logged in for a week
     });
     return res.json({ token });
   } else {
