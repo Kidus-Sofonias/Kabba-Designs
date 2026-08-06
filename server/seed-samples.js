@@ -1,3 +1,5 @@
+require("dotenv").config();
+
 const { put } = require("@vercel/blob");
 const pool = require("./config/db");
 const fs = require("fs");
@@ -150,7 +152,9 @@ let imgCounter = 0;
  * Upload a remote image to Vercel Blob (fetch it first, then put the buffer)
  */
 async function uploadRemoteImage(sourceUrl, folder, publicId) {
-  const res = await fetch(sourceUrl);
+  const res = await fetch(sourceUrl, {
+    signal: AbortSignal.timeout(15000), // don't hang forever on slow/unreachable hosts
+  });
   if (!res.ok) {
     const msg = `Fetch failed (${res.status}) for ${sourceUrl}`;
     console.log(`\n    ⚠ ${msg}`);
@@ -201,18 +205,14 @@ async function uploadProductImages(product, productKey) {
   );
   imgCounter += 2;
 
-  for (let idx = 0; idx < Math.min(sources.length, 2); idx++) {
-    try {
-      const url = await uploadRemoteImage(
-        sources[idx],
-        folder,
-        `seed_${productKey}_${idx}`
-      );
-      imageUrls.push(url);
-    } catch {
-      // fall through to placeholder
-    }
-    await new Promise((r) => setTimeout(r, 200));
+  // Try up to 2 reliable sources per product, in parallel
+  const results = await Promise.allSettled(
+    sources.slice(0, 2).map((src, idx) =>
+      uploadRemoteImage(src, folder, `seed_${productKey}_${idx}`)
+    )
+  );
+  for (const r of results) {
+    if (r.status === "fulfilled") imageUrls.push(r.value);
   }
 
   // If no images uploaded yet, create placeholder
@@ -379,7 +379,7 @@ async function main() {
   const isDbConnected = await testDbConnection();
 
   // ── Upload Product Images ──
-  console.log("─── Uploading Product Images to Cloudinary ───\n");
+  console.log("─── Uploading Product Images to Vercel Blob ───\n");
   const productImageMap = {};
   for (let i = 0; i < SAMPLE_PRODUCTS.length; i++) {
     const product = SAMPLE_PRODUCTS[i];
@@ -392,7 +392,7 @@ async function main() {
   }
 
   // ── Upload Event Images ──
-  console.log("\n─── Uploading Event Images to Cloudinary ───\n");
+  console.log("\n─── Uploading Event Images to Vercel Blob ───\n");
   const eventImageMap = {};
   for (let i = 0; i < SAMPLE_EVENTS.length; i++) {
     const event = SAMPLE_EVENTS[i];
@@ -409,7 +409,7 @@ async function main() {
 
   if (!isDbConnected) {
     console.log("  ❌ Could not connect to database.");
-    console.log("  Generating SQL file with Cloudinary URLs instead...\n");
+    console.log("  Generating SQL file with image URLs instead...\n");
     generateSqlFile(productImageMap, eventImageMap);
     console.log('  ✅ SQL file saved: server/seed-output.sql');
     console.log('  ▶ Run: psql "$DATABASE_URL" -f seed-output.sql\n');
