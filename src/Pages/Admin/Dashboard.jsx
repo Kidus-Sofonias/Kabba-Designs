@@ -41,9 +41,11 @@ function StatsCards({ onNavigate }) {
   useEffect(() => {
     (async () => {
       try {
+        const token = localStorage.getItem("token");
+        const authHeaders = { headers: { Authorization: `Bearer ${token}` } };
         const [prodRes, orderRes, eventRes] = await Promise.all([
           api.get("/products"),
-          api.get("/orders").catch(() => ({ data: [] })),
+          api.get("/orders", authHeaders).catch(() => ({ data: [] })),
           api.get("/events").catch(() => ({ data: [] })),
         ]);
         const orders = Array.isArray(orderRes.data) ? orderRes.data : [];
