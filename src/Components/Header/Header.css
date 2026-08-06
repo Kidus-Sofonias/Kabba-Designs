@@ -1,0 +1,38 @@
+.custom-carousel {
+  margin-top: 50px;
+}
+
+.carousel-slide {
+  position: relative;
+}
+
+.carousel-slide img {
+  height: 90vh;
+  object-fit: cover;
+  width: 100%;
+}
+
+.slide-overlay {
+  position: absolute;
+  top: 45%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  color: white;
+  text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.6);
+  animation: fadeIn 2s ease-in-out;
+}
+
+.slide-overlay h1 {
+  font-size: 3.5rem;
+  font-weight: bold;
+}
+
+.slide-overlay p {
+  font-size: 1.4rem;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translate(-50%, -60%); }
+  to { opacity: 1; transform: translate(-50%, -50%); }
+}

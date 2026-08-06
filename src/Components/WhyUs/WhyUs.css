@@ -1,0 +1,28 @@
+.whyus-section {
+    background-color: var(--bg-soft);
+    color: var(--text);
+}
+
+.section-title {
+    font-weight: 700;
+    font-size: 2rem;
+}
+
+.underline {
+    width: 80px;
+    height: 3px;
+    background-color: var(--accent);
+    margin: 10px auto;
+    border: none;
+}
+
+.whyus-item {
+    text-align: center;
+    padding: 20px;
+}
+
+.whyus-icon {
+    color: var(--accent);
+    font-size: 2rem;
+    margin-bottom: 15px;
+}

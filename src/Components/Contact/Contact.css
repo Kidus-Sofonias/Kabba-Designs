@@ -1,0 +1,7 @@
+.contact-section { background: transparent; border-top: 4px solid var(--accent); }
+.highlight { color: var(--accent); }
+.underline { width: 100px; height: 3px; background-color: var(--accent); border: none; margin: 0 auto 30px; }
+.contact-icons div { font-size: 1.1rem; margin-bottom: 10px; color: var(--text); }
+.contact-icons svg { color: var(--accent); margin-right: 10px; }
+.contact-icons a { color: var(--text); text-decoration: none; }
+.contact-icons a:hover { text-decoration: underline; }

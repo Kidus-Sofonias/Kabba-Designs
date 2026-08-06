@@ -1,0 +1,22 @@
+.logo {
+  width: 90px;
+}
+
+.nav-link {
+  font-size: 16px;
+  transition: color 0.3s ease;
+}
+
+.nav-link {
+  color: var(--text) !important;
+  transition: color 0.3s ease;
+}
+
+.nav-link:hover {
+  color: var(--accent) !important;
+}
+
+.navbar {
+  background-color: var(--nav-bg) !important;
+  backdrop-filter: blur(10px);
+}

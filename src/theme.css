@@ -1,0 +1,199 @@
+/* ============================================================
+   Kabba Designs — Theme
+   A warm, premium "African luxury" palette:
+   ebony/espresso surfaces, sand text, gold + terracotta accents.
+   Dark is the default; a warm light theme is available via
+   the [data-theme="light"] attribute (set by ThemeContext).
+   ============================================================ */
+
+:root,
+[data-theme="dark"] {
+  --bg: #151210;
+  --bg-soft: #1d1814;
+  --panel: #221c17;
+  --panel-2: #2b221a;
+  --text: #f3e9d7;
+  --muted: #a8987f;
+  --accent: #d4a24e; /* gold */
+  --accent-strong: #e3b465;
+  --accent-2: #c0563b; /* terracotta */
+  --on-accent: #221703;
+  --glass: rgba(255, 255, 255, 0.03);
+  --shadow: 0 6px 18px rgba(0, 0, 0, 0.55);
+  --nav-bg: rgba(21, 18, 16, 0.92);
+  --border: rgba(212, 162, 78, 0.25);
+}
+
+[data-theme="light"] {
+  --bg: #f6efe2;
+  --bg-soft: #efe5d1;
+  --panel: #fffaf0;
+  --panel-2: #f6ecd7;
+  --text: #2d2317;
+  --muted: #7d6d55;
+  --accent: #a87b1f;
+  --accent-strong: #b8892c;
+  --accent-2: #b04a2c;
+  --on-accent: #fffaf0;
+  --glass: rgba(0, 0, 0, 0.03);
+  --shadow: 0 6px 18px rgba(90, 60, 20, 0.12);
+  --nav-bg: rgba(246, 239, 226, 0.94);
+  --border: rgba(168, 123, 31, 0.3);
+}
+
+html,
+body,
+#root {
+  background: linear-gradient(180deg, var(--bg), var(--bg-soft));
+  color: var(--text);
+  transition: background 300ms ease, color 200ms ease;
+}
+
+/* Flex shell so the footer always sits at the bottom of the page */
+.app-shell {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.app-main {
+  flex: 1 0 auto;
+}
+
+.card,
+.navbar,
+.footer,
+.modal-content {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), transparent),
+    var(--panel);
+  color: var(--text);
+  box-shadow: var(--shadow);
+}
+
+/* ---------- Buttons ---------- */
+
+.btn-accent {
+  background: linear-gradient(90deg, var(--accent), var(--accent-2));
+  color: var(--on-accent);
+  border: 0;
+  font-weight: 600;
+  transition: filter 0.2s ease, transform 0.15s ease;
+}
+
+.btn-accent:hover,
+.btn-accent:focus {
+  filter: brightness(1.08);
+  color: var(--on-accent);
+  transform: translateY(-1px);
+}
+
+/* Re-skin Bootstrap's yellow warning buttons with the brand gold */
+.btn-warning {
+  --bs-btn-bg: var(--accent);
+  --bs-btn-border-color: var(--accent);
+  --bs-btn-hover-bg: var(--accent-strong);
+  --bs-btn-hover-border-color: var(--accent-strong);
+  --bs-btn-active-bg: var(--accent-strong);
+  --bs-btn-active-border-color: var(--accent-strong);
+  --bs-btn-color: var(--on-accent);
+  --bs-btn-hover-color: var(--on-accent);
+  --bs-btn-active-color: var(--on-accent);
+}
+
+.btn-outline-light {
+  --bs-btn-color: var(--text);
+  --bs-btn-border-color: var(--muted);
+  --bs-btn-hover-bg: var(--accent);
+  --bs-btn-hover-border-color: var(--accent);
+  --bs-btn-hover-color: var(--on-accent);
+}
+
+/* ---------- Navbar ---------- */
+
+.navbar {
+  background-color: var(--nav-bg) !important;
+  backdrop-filter: blur(10px);
+}
+
+.theme-toggle {
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  color: var(--accent);
+  width: 36px;
+  height: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  transition: background 0.2s ease, color 0.2s ease, transform 0.15s ease;
+}
+
+.theme-toggle:hover {
+  background: var(--accent);
+  color: var(--on-accent);
+  transform: rotate(15deg);
+}
+
+[data-theme="light"] .navbar-dark {
+  --bs-navbar-color: var(--muted);
+  --bs-navbar-hover-color: var(--accent);
+  --bs-navbar-active-color: var(--accent);
+  --bs-navbar-brand-color: var(--text);
+}
+
+/* ---------- Forms / misc ---------- */
+
+.form-control,
+.form-control:focus {
+  background-color: var(--panel);
+  color: var(--text);
+  border-color: var(--border);
+}
+
+.form-control::placeholder {
+  color: var(--muted);
+}
+
+.table-dark {
+  --bs-table-bg: var(--panel);
+  --bs-table-color: var(--text);
+  --bs-table-border-color: var(--border);
+}
+
+.muted {
+  color: var(--muted);
+}
+
+.glass {
+  background: var(--glass);
+  backdrop-filter: blur(6px);
+}
+
+/* Custom scrollbar (WebKit) */
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--accent);
+  border-radius: 5px;
+}
+
+/* subtle entrance animation */
+@keyframes subtleRise {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.entrance {
+  animation: subtleRise 520ms cubic-bezier(0.2, 0.9, 0.3, 1) both;
+}

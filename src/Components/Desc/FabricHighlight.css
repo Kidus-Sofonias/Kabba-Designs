@@ -1,0 +1,61 @@
+.fabric-section {
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    min-height: 500px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.fabric-overlay {
+    background-color: rgba(0, 0, 0, 0.5); /* Smooth dark overlay */
+    width: 100%;
+    height: 100%;
+    padding: 200px 0;
+    display: flex;
+    align-items: center;
+}
+
+.fabric-overlay .container {
+    display: flex;
+    flex-wrap: wrap;
+    color: #fff;
+}
+
+.fabric-overlay h1 {
+    font-size: 2.8rem;
+    font-weight: 700;
+}
+
+.fabric-overlay h3 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    line-height: 1.4;
+}
+
+.fabric-overlay p {
+    font-size: 1.1rem;
+    line-height: 1.8;
+}
+
+@media (max-width: 768px) {
+    .fabric-overlay {
+    padding: 150px 20px;
+    text-align: center;
+    }
+
+    .fabric-overlay h1 {
+    font-size: 2rem;
+    }
+
+    .fabric-overlay h3 {
+    font-size: 1.2rem;
+    }
+
+    .fabric-overlay p {
+    font-size: 1rem;
+    }
+}

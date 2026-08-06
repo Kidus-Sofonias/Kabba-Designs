@@ -1,0 +1,7 @@
+.home-upcoming-events { margin: 3rem 0; }
+.home-upcoming-events h2 { color: var(--text); }
+.home-upcoming-events p { color: var(--muted); }
+.home-underline { width: 100px; height: 3px; background: var(--accent); border: none; margin: 0 auto 1.5rem; }
+
+/* keep event-cards-row responsive but ensure center alignment in dark mode */
+.event-cards-row { display: flex; justify-content: center; gap: 2rem; flex-wrap: wrap; }

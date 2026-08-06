@@ -1,0 +1,6 @@
+.env
+/node_modules
+/uploads/
+*.db
+/tmp-seed-images/
+seed-output.sql
