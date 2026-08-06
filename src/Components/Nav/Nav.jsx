@@ -34,6 +34,7 @@ function Nav() {
     { to: "/about", label: "About" },
     { to: "/products", label: "Products" },
     { to: "/events", label: "Events" },
+    { to: "/track-order", label: "Track Order" },
     { to: "/contact", label: "Contact" },
   ];
 

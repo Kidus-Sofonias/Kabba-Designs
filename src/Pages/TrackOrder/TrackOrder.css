@@ -1,0 +1,372 @@
+/* ── Track Order Page ── */
+.track-order-page {
+  min-height: calc(100vh - 140px);
+  padding: 60px 20px 80px;
+  display: flex;
+  justify-content: center;
+}
+
+.track-order-container {
+  width: 100%;
+  max-width: 720px;
+}
+
+/* ── Header ── */
+.track-order-header {
+  text-align: center;
+  margin-bottom: 36px;
+}
+
+.track-order-icon {
+  font-size: 48px;
+  margin-bottom: 12px;
+}
+
+.track-order-header h1 {
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--text);
+  margin: 0 0 8px;
+}
+
+.track-order-header p {
+  font-size: 1rem;
+  color: var(--muted);
+  margin: 0;
+}
+
+/* ── Form ── */
+.track-order-form {
+  margin-bottom: 32px;
+}
+
+.track-order-input-group {
+  display: flex;
+  gap: 0;
+  border-radius: 14px;
+  overflow: hidden;
+  border: 2px solid var(--border);
+  background: var(--panel);
+  transition: border-color 0.2s;
+}
+
+.track-order-input-group:focus-within {
+  border-color: var(--accent);
+}
+
+.track-order-input {
+  flex: 1;
+  padding: 16px 20px;
+  border: none;
+  background: transparent;
+  font-size: 15px;
+  color: var(--text);
+  outline: none;
+}
+
+.track-order-input::placeholder {
+  color: var(--muted);
+}
+
+.track-order-btn {
+  padding: 16px 28px;
+  background: var(--accent);
+  color: var(--on-accent);
+  border: none;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: opacity 0.2s;
+  white-space: nowrap;
+}
+
+.track-order-btn:hover {
+  opacity: 0.9;
+}
+
+.track-order-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.track-order-spinner {
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ── Error ── */
+.track-order-error {
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  color: #ef4444;
+  padding: 14px 18px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* ── Empty ── */
+.track-order-empty {
+  text-align: center;
+  padding: 48px 20px;
+  color: var(--muted);
+  font-size: 15px;
+}
+
+.track-order-empty-icon {
+  font-size: 40px;
+  margin-bottom: 12px;
+  opacity: 0.5;
+}
+
+/* ── Results ── */
+.track-order-results {
+  display: grid;
+  gap: 20px;
+}
+
+/* ── Order Card ── */
+.track-order-card {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.track-order-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--border);
+}
+
+.track-order-id {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.track-order-date {
+  font-size: 13px;
+  color: var(--muted);
+  margin-top: 2px;
+}
+
+.track-order-total {
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--accent);
+}
+
+/* ── Progress ── */
+.track-progress {
+  padding: 24px 24px 20px;
+}
+
+.track-progress-bar {
+  height: 4px;
+  background: var(--border);
+  border-radius: 4px;
+  margin-bottom: 16px;
+  overflow: hidden;
+}
+
+.track-progress-fill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.5s ease;
+}
+
+.track-progress-steps {
+  display: flex;
+  justify-content: space-between;
+}
+
+.track-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.track-step-dot {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+  color: #fff;
+  transition: all 0.3s ease;
+}
+
+.track-step:not(.active) .track-step-dot {
+  color: var(--muted);
+  font-size: 0;
+}
+
+.track-step-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.track-step.active .track-step-label {
+  color: var(--text);
+}
+
+/* ── Cancelled ── */
+.track-cancelled-badge {
+  margin: 16px 24px;
+  padding: 12px 18px;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  border-radius: 10px;
+  color: #ef4444;
+  font-weight: 600;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* ── Items ── */
+.track-order-items {
+  padding: 0 24px 16px;
+  display: grid;
+  gap: 8px;
+}
+
+.track-order-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  background: var(--bg);
+  border-radius: 10px;
+}
+
+.track-item-img {
+  width: 48px;
+  height: 48px;
+  border-radius: 8px;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.track-item-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--panel);
+  font-size: 20px;
+  color: var(--muted);
+}
+
+.track-item-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.track-item-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.track-item-meta {
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 2px;
+}
+
+.track-item-subtotal {
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--accent);
+  white-space: nowrap;
+}
+
+/* ── Footer ── */
+.track-order-footer {
+  padding: 12px 24px;
+  border-top: 1px solid var(--border);
+  text-align: right;
+}
+
+.track-tx-ref {
+  font-size: 11px;
+  color: var(--muted);
+  font-family: monospace;
+}
+
+/* ── Responsive ── */
+@media (max-width: 600px) {
+  .track-order-page {
+    padding: 40px 16px 60px;
+  }
+
+  .track-order-header h1 {
+    font-size: 1.5rem;
+  }
+
+  .track-order-input-group {
+    flex-direction: column;
+    border-radius: 12px;
+  }
+
+  .track-order-btn {
+    border-radius: 0 0 10px 10px;
+    justify-content: center;
+  }
+
+  .track-order-card-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 16px 18px;
+  }
+
+  .track-progress {
+    padding: 20px 18px;
+  }
+
+  .track-step-label {
+    font-size: 9px;
+  }
+
+  .track-step-dot {
+    width: 24px;
+    height: 24px;
+  }
+
+  .track-order-items {
+    padding: 0 18px 14px;
+  }
+
+  .track-order-footer {
+    padding: 10px 18px;
+  }
+}

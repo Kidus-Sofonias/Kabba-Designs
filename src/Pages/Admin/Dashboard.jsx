@@ -726,27 +726,31 @@ function EventManager({ addToast }) {
   );
 }
 
-/* ── Order Table ── */
-function OrderManager() {
+/* ── Order Manager ── */
+const STATUS_OPTIONS = ["Pending", "Processing", "Shipped", "Delivered", "Cancelled"];
+
+function OrderManager({ addToast }) {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("All");
+  const [updatingId, setUpdatingId] = useState(null);
+  const [expandedOrder, setExpandedOrder] = useState(null);
 
-  useEffect(() => {
-    (async () => {
-      try {
-        const { data } = await api.get("/orders", {
-          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-        });
-        setOrders(Array.isArray(data) ? data : []);
-      } catch {
-        setOrders([]);
-      } finally {
-        setLoading(false);
-      }
-    })();
-  }, []);
+  const fetchOrders = async () => {
+    try {
+      const { data } = await api.get("/orders", {
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+      });
+      setOrders(Array.isArray(data) ? data : []);
+    } catch {
+      setOrders([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => { fetchOrders(); }, []);
 
   const filtered = orders.filter((o) => {
     const matchSearch = !search || (o.name || "").toLowerCase().includes(search.toLowerCase()) || (o.email || "").toLowerCase().includes(search.toLowerCase());
@@ -754,9 +758,33 @@ function OrderManager() {
     return matchSearch && matchStatus;
   });
 
+  const handleStatusChange = async (orderId, newStatus) => {
+    setUpdatingId(orderId);
+    try {
+      await api.put(`/orders/${orderId}/status`, { status: newStatus }, {
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+      });
+      setOrders((prev) => prev.map((o) => o.id === orderId ? { ...o, status: newStatus } : o));
+      addToast(`Order #${orderId} marked as ${newStatus}`, "success");
+    } catch (err) {
+      addToast(err.response?.data?.error || "Failed to update status", "error");
+    } finally {
+      setUpdatingId(null);
+    }
+  };
+
   const formatDate = (d) => {
     if (!d) return "—";
     return new Date(d).toLocaleDateString("en-US", { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" });
+  };
+
+  const statusColor = (status) => {
+    const s = (status || "pending").toLowerCase();
+    if (s === "delivered") return { bg: "rgba(16, 185, 129, 0.15)", color: "#10b981" };
+    if (s === "shipped") return { bg: "rgba(59, 130, 246, 0.15)", color: "#3b82f6" };
+    if (s === "processing") return { bg: "rgba(245, 158, 11, 0.15)", color: "#f59e0b" };
+    if (s === "cancelled") return { bg: "rgba(239, 68, 68, 0.15)", color: "#ef4444" };
+    return { bg: "rgba(107, 114, 128, 0.15)", color: "#6b7280" };
   };
 
   return (
@@ -764,10 +792,10 @@ function OrderManager() {
       <div className="admin-card-header" style={{ padding: 0, borderBottom: "none", marginBottom: 20 }}>
         <div className="search-bar">
           <span className="search-icon">🔍</span>
-          <input placeholder="Search orders..." value={search} onChange={(e) => setSearch(e.target.value)} />
+          <input placeholder="Search by name or email..." value={search} onChange={(e) => setSearch(e.target.value)} />
         </div>
         <div className="filter-chips">
-          {["All", "Pending", "Paid", "Shipped", "Delivered", "Cancelled"].map((s) => (
+          {["All", ...STATUS_OPTIONS].map((s) => (
             <button
               key={s}
               className={`filter-chip ${statusFilter === s ? "active" : ""}`}
@@ -794,51 +822,130 @@ function OrderManager() {
             </div>
           </div>
         ) : (
-          <div className="table-responsive" style={{ overflowX: "auto" }}>
-            <table className="admin-table">
-              <thead>
-                <tr>
-                  <th>#</th>
-                  <th>Customer</th>
-                  <th>Items</th>
-                  <th>Total</th>
-                  <th>Status</th>
-                  <th>Date</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filtered.map((order) => (
-                  <tr key={order.id}>
-                    <td style={{ fontWeight: 600, color: "var(--muted)" }}>#{order.id}</td>
-                    <td>
-                      <div style={{ fontWeight: 500 }}>{order.name || "—"}</div>
-                      <div style={{ fontSize: 12, color: "var(--muted)" }}>{order.email}</div>
-                    </td>
-                    <td>
-                      {(order.items || []).slice(0, 2).map((item, i) => (
-                        <div key={i} style={{ fontSize: 13 }}>
-                          {item.name} ×{item.quantity}
-                        </div>
-                      ))}
-                      {(order.items || []).length > 2 && (
-                        <div style={{ fontSize: 12, color: "var(--muted)" }}>
-                          +{(order.items || []).length - 2} more
-                        </div>
-                      )}
-                    </td>
-                    <td style={{ fontWeight: 600, color: "var(--accent)" }}>
+          <div style={{ display: "grid", gap: 12 }}>
+            {filtered.map((order) => {
+              const sc = statusColor(order.status);
+              const isExpanded = expandedOrder === order.id;
+              return (
+                <div key={order.id} className="admin-card" style={{ overflow: "hidden" }}>
+                  {/* Order header row */}
+                  <div
+                    style={{ display: "flex", alignItems: "center", gap: 16, padding: "16px 20px", cursor: "pointer" }}
+                    onClick={() => setExpandedOrder(isExpanded ? null : order.id)}
+                  >
+                    <div style={{ fontWeight: 700, color: "var(--muted)", fontSize: 14, minWidth: 40 }}>#{order.id}</div>
+                    <div style={{ flex: 1 }}>
+                      <div style={{ fontWeight: 600, color: "var(--text)" }}>{order.name || "—"}</div>
+                      <div style={{ fontSize: 12, color: "var(--muted)", marginTop: 2 }}>{order.email}</div>
+                    </div>
+                    <div style={{ fontWeight: 700, color: "var(--accent)", fontSize: 15 }}>
                       {Number(order.total || 0).toLocaleString()} Birr
-                    </td>
-                    <td>
-                      <span className={`status-badge ${(order.status || "pending").toLowerCase()}`}>
-                        {order.status || "Pending"}
-                      </span>
-                    </td>
-                    <td style={{ fontSize: 13, color: "var(--muted)" }}>{formatDate(order.created_at)}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+                    </div>
+                    <div
+                      style={{
+                        padding: "4px 12px",
+                        borderRadius: 20,
+                        fontSize: 12,
+                        fontWeight: 600,
+                        background: sc.bg,
+                        color: sc.color,
+                        whiteSpace: "nowrap",
+                      }}
+                    >
+                      {order.status || "Pending"}
+                    </div>
+                    <div style={{ fontSize: 12, color: "var(--muted)", whiteSpace: "nowrap" }}>
+                      {formatDate(order.created_at)}
+                    </div>
+                    <div style={{ fontSize: 18, color: "var(--muted)", transition: "transform 0.2s", transform: isExpanded ? "rotate(180deg)" : "none" }}>
+                      ▾
+                    </div>
+                  </div>
+
+                  {/* Expanded details */}
+                  {isExpanded && (
+                    <div style={{ borderTop: "1px solid var(--border)", padding: "16px 20px" }}>
+                      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20, marginBottom: 20 }}>
+                        {/* Customer info */}
+                        <div>
+                          <div style={{ fontSize: 11, fontWeight: 600, color: "var(--muted)", textTransform: "uppercase", letterSpacing: 1, marginBottom: 8 }}>Customer Details</div>
+                          <div style={{ fontSize: 14, color: "var(--text)", marginBottom: 4 }}><strong>Name:</strong> {order.name || "—"}</div>
+                          <div style={{ fontSize: 14, color: "var(--text)", marginBottom: 4 }}><strong>Email:</strong> {order.email || "—"}</div>
+                          <div style={{ fontSize: 14, color: "var(--text)", marginBottom: 4 }}><strong>Phone:</strong> {order.phone || "—"}</div>
+                          <div style={{ fontSize: 14, color: "var(--text)" }}><strong>Address:</strong> {order.address || "—"}</div>
+                        </div>
+
+                        {/* Status update */}
+                        <div>
+                          <div style={{ fontSize: 11, fontWeight: 600, color: "var(--muted)", textTransform: "uppercase", letterSpacing: 1, marginBottom: 8 }}>Update Status</div>
+                          <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+                            {STATUS_OPTIONS.map((s) => (
+                              <button
+                                key={s}
+                                disabled={updatingId === order.id || (order.status || "Pending") === s}
+                                onClick={() => handleStatusChange(order.id, s)}
+                                style={{
+                                  padding: "6px 14px",
+                                  borderRadius: 8,
+                                  border: (order.status || "Pending") === s ? `2px solid ${statusColor(s).color}` : "1px solid var(--border)",
+                                  background: (order.status || "Pending") === s ? statusColor(s).bg : "var(--panel)",
+                                  color: (order.status || "Pending") === s ? statusColor(s).color : "var(--muted)",
+                                  fontSize: 12,
+                                  fontWeight: 600,
+                                  cursor: (order.status || "Pending") === s ? "default" : "pointer",
+                                  opacity: updatingId === order.id ? 0.5 : 1,
+                                  transition: "all 0.2s",
+                                }}
+                              >
+                                {s === "Delivered" && "✓ "}{s === "Shipped" && "🚚 "}{s === "Cancelled" && "✕ "}{s}
+                              </button>
+                            ))}
+                          </div>
+                          {updatingId === order.id && (
+                            <div style={{ marginTop: 8, fontSize: 12, color: "var(--muted)", display: "flex", alignItems: "center", gap: 6 }}>
+                              <span className="admin-spinner" style={{ width: 14, height: 14, borderWidth: 2 }} /> Updating…
+                            </div>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* Items */}
+                      <div style={{ fontSize: 11, fontWeight: 600, color: "var(--muted)", textTransform: "uppercase", letterSpacing: 1, marginBottom: 8 }}>Order Items</div>
+                      <div style={{ display: "grid", gap: 8 }}>
+                        {(order.items || []).map((item, i) => {
+                          const imgs = parseImages(item.image_urls);
+                          return (
+                            <div key={i} style={{ display: "flex", alignItems: "center", gap: 12, padding: "10px 14px", background: "var(--bg)", borderRadius: 10 }}>
+                              {imgs[0] ? (
+                                <img src={imgs[0]} alt={item.name} style={{ width: 44, height: 44, borderRadius: 8, objectFit: "cover" }} />
+                              ) : (
+                                <div style={{ width: 44, height: 44, borderRadius: 8, background: "var(--panel)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18, color: "var(--muted)" }}>📷</div>
+                              )}
+                              <div style={{ flex: 1 }}>
+                                <div style={{ fontSize: 14, fontWeight: 500, color: "var(--text)" }}>{item.name}</div>
+                                <div style={{ fontSize: 12, color: "var(--muted)" }}>Qty: {item.quantity} × {Number(item.price || 0).toLocaleString()} Birr</div>
+                              </div>
+                              <div style={{ fontWeight: 600, color: "var(--accent)", fontSize: 14 }}>
+                                {Number((item.price || 0) * (item.quantity || 1)).toLocaleString()} Birr
+                              </div>
+                            </div>
+                          );
+                        })}
+                        {(order.items || []).length === 0 && (
+                          <div style={{ fontSize: 13, color: "var(--muted)", padding: 10 }}>No item details available</div>
+                        )}
+                      </div>
+
+                      {/* Payment info */}
+                      <div style={{ marginTop: 12, padding: "10px 14px", background: "var(--bg)", borderRadius: 10, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                        <div style={{ fontSize: 12, color: "var(--muted)" }}>TX Ref: <code style={{ fontSize: 11 }}>{order.tx_ref}</code></div>
+                        <div style={{ fontSize: 14, fontWeight: 700, color: "var(--accent)" }}>Total: {Number(order.total || 0).toLocaleString()} Birr</div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              );
+            })}
           </div>
         )}
       </div>

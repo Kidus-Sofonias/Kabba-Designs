@@ -75,6 +75,9 @@ const pgSchema = `
     location_link TEXT,
     image_url TEXT
   );
+
+  -- Migrate: add status column to orders if missing
+  ALTER TABLE orders ADD COLUMN IF NOT EXISTS status TEXT DEFAULT 'Pending';
 `;
 
 async function initializeDatabase() {

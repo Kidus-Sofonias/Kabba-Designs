@@ -27,6 +27,7 @@ import Checkout from "./Pages/CheckOut/CheckOut";
 import Orders from "./Pages/Admin/Orders";
 import OrderDetail from "./Pages/Admin/OrderDetail";
 import Success from "./Pages/Success/Success";
+import TrackOrder from "./Pages/TrackOrder/TrackOrder";
 
 import AOS from "aos";
 import "aos/dist/aos.css";
@@ -80,6 +81,7 @@ function App() {
               <Route path="/checkout" element={<Checkout />} />
               <Route path="/checkout/success" element={<Success />} />
               <Route path="/success" element={<Success />} />
+              <Route path="/track-order" element={<TrackOrder />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </Layout>
