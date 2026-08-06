@@ -1,3 +1,4 @@
+/* ── Footer ── */
 .footer {
   background: var(--bg-soft);
   color: var(--text);
@@ -107,8 +108,30 @@
   text-decoration: underline;
 }
 
-@media (max-width: 575px) {
+/* ── Tablet ── */
+@media (max-width: 992px) {
+  .footer-columns {
+    gap: 32px !important;
+  }
+}
+
+/* ── Mobile ── */
+@media (max-width: 576px) {
   .footer-heading {
-    margin-top: 1rem;
+    margin-top: 1.2rem;
+    margin-bottom: 0.8rem;
+  }
+
+  .footer-blurb {
+    max-width: 100%;
+  }
+
+  .footer-socials {
+    justify-content: flex-start;
+  }
+
+  .footer-bottom {
+    text-align: center;
+    font-size: 0.82rem;
   }
 }

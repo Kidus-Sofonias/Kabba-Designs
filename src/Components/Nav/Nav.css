@@ -1,22 +1,356 @@
-.logo {
-  width: 90px;
+/* ============================================================
+   Kabba Designs — Premium Navbar
+   ============================================================ */
+
+/* ── Desktop Navbar ── */
+.kabba-nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  height: 70px;
+  display: flex;
+  align-items: center;
+  background: transparent;
+  transition: background 0.3s ease, box-shadow 0.3s ease, backdrop-filter 0.3s ease;
 }
 
-.nav-link {
+.kabba-nav.scrolled {
+  background: var(--nav-bg);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: 0 1px 12px rgba(0, 0, 0, 0.2);
+}
+
+.kabba-nav-inner {
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 100%;
+}
+
+/* Logo */
+.kabba-nav-logo {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  flex-shrink: 0;
+}
+
+.kabba-nav-logo-img {
+  height: 42px;
+  width: auto;
+  transition: transform 0.2s ease;
+}
+
+.kabba-nav-logo:hover .kabba-nav-logo-img {
+  transform: scale(1.05);
+}
+
+/* Desktop nav links */
+.kabba-nav-links {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.kabba-nav-link {
+  position: relative;
+  padding: 8px 16px;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--text);
+  text-decoration: none;
+  border-radius: 8px;
+  transition: color 0.2s ease, background 0.2s ease;
+}
+
+.kabba-nav-link:hover {
+  color: var(--accent);
+  background: var(--glass);
+}
+
+.kabba-nav-link.active {
+  color: var(--accent);
+}
+
+.kabba-nav-underline {
+  position: absolute;
+  bottom: 2px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 20px;
+  height: 2px;
+  background: var(--accent);
+  border-radius: 1px;
+}
+
+/* Right actions */
+.kabba-nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.kabba-theme-toggle {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.kabba-theme-toggle:hover {
+  background: var(--accent);
+  color: var(--on-accent);
+  border-color: var(--accent);
+  transform: rotate(15deg);
+}
+
+.kabba-nav-cart {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  color: var(--text);
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.kabba-nav-cart:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+/* Hamburger — hidden on desktop */
+.kabba-hamburger {
+  display: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: transparent;
+  cursor: pointer;
+  position: relative;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  padding: 10px;
+  transition: border-color 0.2s ease;
+}
+
+.kabba-hamburger:hover {
+  border-color: var(--accent);
+}
+
+.kabba-hamburger span {
+  display: block;
+  width: 18px;
+  height: 2px;
+  background: var(--text);
+  border-radius: 1px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transform-origin: center;
+}
+
+.kabba-hamburger.open span:nth-child(1) {
+  transform: translateY(7px) rotate(45deg);
+}
+
+.kabba-hamburger.open span:nth-child(2) {
+  opacity: 0;
+  transform: scaleX(0);
+}
+
+.kabba-hamburger.open span:nth-child(3) {
+  transform: translateY(-7px) rotate(-45deg);
+}
+
+/* ── Mobile Overlay ── */
+.kabba-mobile-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1100;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+  backdrop-filter: blur(4px);
+}
+
+.kabba-mobile-overlay.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* ── Mobile Drawer ── */
+.kabba-mobile-drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 300px;
+  max-width: 85vw;
+  background: var(--panel);
+  z-index: 1200;
+  display: flex;
+  flex-direction: column;
+  transform: translateX(100%);
+  transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: -8px 0 32px rgba(0, 0, 0, 0.3);
+}
+
+.kabba-mobile-drawer.open {
+  transform: translateX(0);
+}
+
+.kabba-mobile-drawer-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border);
+}
+
+.kabba-mobile-close {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text);
+  font-size: 24px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.kabba-mobile-close:hover {
+  background: var(--glass);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.kabba-mobile-drawer-links {
+  flex: 1;
+  padding: 16px 12px;
+  overflow-y: auto;
+}
+
+.kabba-mobile-link {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  color: var(--text);
+  text-decoration: none;
   font-size: 16px;
-  transition: color 0.3s ease;
+  font-weight: 500;
+  border-radius: 10px;
+  transition: all 0.2s ease;
+  margin-bottom: 4px;
 }
 
-.nav-link {
-  color: var(--text) !important;
-  transition: color 0.3s ease;
+.kabba-mobile-link:hover,
+.kabba-mobile-link.active {
+  background: rgba(212, 162, 78, 0.1);
+  color: var(--accent);
 }
 
-.nav-link:hover {
-  color: var(--accent) !important;
+.kabba-mobile-arrow {
+  font-size: 14px;
+  color: var(--muted);
+  transition: transform 0.2s ease, color 0.2s ease;
 }
 
-.navbar {
-  background-color: var(--nav-bg) !important;
-  backdrop-filter: blur(10px);
+.kabba-mobile-link:hover .kabba-mobile-arrow {
+  transform: translateX(4px);
+  color: var(--accent);
+}
+
+.kabba-mobile-drawer-footer {
+  padding: 12px;
+  border-top: 1px solid var(--border);
+}
+
+.kabba-mobile-theme-row {
+  padding: 8px 16px;
+}
+
+.kabba-mobile-theme-row .kabba-theme-toggle {
+  width: 100%;
+  height: auto;
+  padding: 12px 16px;
+  border-radius: 10px;
+  justify-content: flex-start;
+  gap: 10px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text);
+}
+
+.kabba-mobile-theme-row .kabba-theme-toggle span {
+  margin-left: 4px;
+}
+
+/* ── Responsive: Tablet ── */
+@media (max-width: 992px) {
+  .kabba-nav-links {
+    display: none;
+  }
+
+  .kabba-hamburger {
+    display: flex;
+  }
+}
+
+/* ── Responsive: Mobile ── */
+@media (max-width: 576px) {
+  .kabba-nav {
+    height: 60px;
+  }
+
+  .kabba-nav-inner {
+    padding: 0 16px;
+  }
+
+  .kabba-nav-logo-img {
+    height: 36px;
+  }
+
+  .kabba-theme-toggle {
+    width: 36px;
+    height: 36px;
+  }
+
+  .kabba-nav-cart {
+    width: 36px;
+    height: 36px;
+  }
+
+  .kabba-hamburger {
+    width: 36px;
+    height: 36px;
+  }
+
+  .kabba-mobile-drawer {
+    width: 280px;
+  }
 }

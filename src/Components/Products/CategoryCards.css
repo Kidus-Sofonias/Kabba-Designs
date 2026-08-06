@@ -1,39 +1,79 @@
+/* ── Category Cards ── */
 .category-card {
-    background-size: cover;
-    background-position: center;
-    border-radius: 8px;
-    height: 400px;
-    position: relative;
-    overflow: hidden;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  background-size: cover;
+  background-position: center;
+  border-radius: 12px;
+  height: 400px;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.3s ease;
+}
+
+.category-card:hover {
+  transform: translateY(-4px);
 }
 
 .category-overlay {
-    background-color: rgba(0, 0, 0, 0.5);
-    color: white;
-    padding: 20px;
-    width: 100%;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    text-shadow: 1px 1px 3px rgba(0,0,0,0.6);
+  background: linear-gradient(180deg, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.7) 100%);
+  color: white;
+  padding: 24px;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  text-shadow: 1px 1px 4px rgba(0,0,0,0.5);
 }
 
 .category-overlay h3 {
-    font-size: 1.8rem;
-    font-weight: 700;
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin-bottom: 8px;
 }
 
 .category-overlay p {
-    font-size: 1.1rem;
-    font-weight: 500;
-    margin-bottom: 1.5rem;
+  font-size: 1rem;
+  font-weight: 400;
+  margin-bottom: 1.2rem;
+  opacity: 0.9;
 }
 
 .btn-group .btn {
-    padding: 8px 16px;
-    font-weight: 600;
+  padding: 8px 20px;
+  font-weight: 600;
+  border-radius: 8px;
+}
+
+/* ── Tablet ── */
+@media (max-width: 992px) {
+  .category-card {
+    height: 320px;
+  }
+
+  .category-overlay h3 {
+    font-size: 1.5rem;
+  }
+}
+
+/* ── Mobile ── */
+@media (max-width: 576px) {
+  .category-card {
+    height: 260px;
+  }
+
+  .category-overlay {
+    padding: 16px;
+  }
+
+  .category-overlay h3 {
+    font-size: 1.3rem;
+  }
+
+  .category-overlay p {
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+  }
 }
