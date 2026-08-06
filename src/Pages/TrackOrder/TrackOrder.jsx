@@ -160,6 +160,21 @@ export default function TrackOrder() {
                     </div>
                   )}
 
+                  {/* Delivery proof image */}
+                  {(order.status || "").toLowerCase() === "delivered" && order.delivery_proof_url && (
+                    <div className="track-delivery-proof">
+                      <div className="track-delivery-badge">
+                        <span className="track-delivery-check">✓</span>
+                        <span>Delivered — Proof of Delivery</span>
+                      </div>
+                      <img
+                        src={order.delivery_proof_url}
+                        alt="Delivery proof"
+                        className="track-delivery-img"
+                      />
+                    </div>
+                  )}
+
                   {/* Order items */}
                   {order.items && order.items.length > 0 && (
                     <div className="track-order-items">

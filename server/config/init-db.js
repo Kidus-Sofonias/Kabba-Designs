@@ -76,8 +76,9 @@ const pgSchema = `
     image_url TEXT
   );
 
-  -- Migrate: add status column to orders if missing
+  -- Migrate: add status + delivery proof columns to orders if missing
   ALTER TABLE orders ADD COLUMN IF NOT EXISTS status TEXT DEFAULT 'Pending';
+  ALTER TABLE orders ADD COLUMN IF NOT EXISTS delivery_proof_url TEXT;
 `;
 
 async function initializeDatabase() {

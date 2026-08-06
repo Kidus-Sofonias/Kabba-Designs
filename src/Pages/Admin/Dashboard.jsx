@@ -736,6 +736,12 @@ function OrderManager({ addToast }) {
   const [statusFilter, setStatusFilter] = useState("All");
   const [updatingId, setUpdatingId] = useState(null);
   const [expandedOrder, setExpandedOrder] = useState(null);
+  // Delivery confirmation modal state
+  const [deliverModal, setDeliverModal] = useState(null); // orderId or null
+  const [deliverFile, setDeliverFile] = useState(null);
+  const [deliverPreview, setDeliverPreview] = useState(null);
+  const [deliverSubmitting, setDeliverSubmitting] = useState(false);
+  const deliverFileRef = useRef();
 
   const fetchOrders = async () => {
     try {
@@ -759,6 +765,13 @@ function OrderManager({ addToast }) {
   });
 
   const handleStatusChange = async (orderId, newStatus) => {
+    // If marking as Delivered, open the delivery proof modal
+    if (newStatus === "Delivered") {
+      setDeliverModal(orderId);
+      setDeliverFile(null);
+      setDeliverPreview(null);
+      return;
+    }
     setUpdatingId(orderId);
     try {
       await api.put(`/orders/${orderId}/status`, { status: newStatus }, {
@@ -771,6 +784,36 @@ function OrderManager({ addToast }) {
     } finally {
       setUpdatingId(null);
     }
+  };
+
+  const handleDeliverConfirm = async () => {
+    if (!deliverFile) return addToast("Please upload a delivery proof image", "error");
+    setDeliverSubmitting(true);
+    try {
+      const fd = new FormData();
+      fd.append("status", "Delivered");
+      fd.append("delivery_proof", deliverFile);
+      await api.put(`/orders/${deliverModal}/status`, fd, {
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}`, "Content-Type": "multipart/form-data" },
+      });
+      setOrders((prev) => prev.map((o) => o.id === deliverModal ? { ...o, status: "Delivered" } : o));
+      addToast(`Order #${deliverModal} marked as Delivered with proof`, "success");
+      setDeliverModal(null);
+      setDeliverFile(null);
+      setDeliverPreview(null);
+    } catch (err) {
+      addToast(err.response?.data?.error || "Failed to mark as delivered", "error");
+    } finally {
+      setDeliverSubmitting(false);
+    }
+  };
+
+  const handleDeliverFileChange = (file) => {
+    if (!file) return;
+    setDeliverFile(file);
+    const reader = new FileReader();
+    reader.onload = (e) => setDeliverPreview(e.target.result);
+    reader.readAsDataURL(file);
   };
 
   const formatDate = (d) => {
@@ -949,6 +992,80 @@ function OrderManager({ addToast }) {
           </div>
         )}
       </div>
+
+      {/* Delivery Confirmation Modal */}
+      {deliverModal && (
+        <div className="admin-modal-overlay" onClick={() => !deliverSubmitting && setDeliverModal(null)}>
+          <div className="admin-modal" onClick={(e) => e.stopPropagation()} style={{ maxWidth: 480 }}>
+            <div className="admin-modal-header">
+              <h3 className="admin-modal-title">📦 Confirm Delivery — Order #{deliverModal}</h3>
+              <button className="admin-modal-close" onClick={() => !deliverSubmitting && setDeliverModal(null)}>×</button>
+            </div>
+            <div className="admin-modal-body">
+              <p style={{ fontSize: 14, color: "var(--muted)", marginBottom: 16 }}>
+                Upload a photo of the delivered package as proof of delivery. This image will be visible to the customer.
+              </p>
+
+              {/* Image upload zone */}
+              <div
+                className="image-upload-zone"
+                onClick={() => !deliverSubmitting && deliverFileRef.current?.click()}
+                style={{ marginBottom: 16 }}
+              >
+                <div className="image-upload-icon">📸</div>
+                <div className="image-upload-text">
+                  <strong>Click to upload</strong> delivery proof photo
+                  <br />
+                  PNG, JPG, WEBP up to 10MB
+                </div>
+              </div>
+              <input
+                ref={deliverFileRef}
+                type="file"
+                accept="image/*"
+                style={{ display: "none" }}
+                onChange={(e) => handleDeliverFileChange(e.target.files[0])}
+              />
+
+              {/* Preview */}
+              {deliverPreview && (
+                <div className="image-preview-grid" style={{ marginBottom: 0 }}>
+                  <div className="image-preview-item">
+                    <img src={deliverPreview} alt="Delivery proof" />
+                    <button
+                      type="button"
+                      className="image-preview-remove"
+                      onClick={() => { setDeliverFile(null); setDeliverPreview(null); }}
+                    >
+                      ×
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+            <div className="admin-modal-footer">
+              <button className="admin-btn secondary" onClick={() => setDeliverModal(null)} disabled={deliverSubmitting}>
+                Cancel
+              </button>
+              <button
+                className="admin-btn primary"
+                onClick={handleDeliverConfirm}
+                disabled={deliverSubmitting || !deliverFile}
+                style={{ background: deliverFile ? "#10b981" : undefined }}
+              >
+                {deliverSubmitting ? (
+                  <span style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                    <span className="admin-spinner" style={{ borderTopColor: "var(--on-accent)" }} />
+                    Uploading…
+                  </span>
+                ) : (
+                  <>✓ Confirm Delivery</>
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

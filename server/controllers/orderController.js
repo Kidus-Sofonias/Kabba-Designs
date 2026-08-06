@@ -1,3 +1,4 @@
+const { put } = require("@vercel/blob");
 const pool = require("../config/db");
 
 const getAllOrders = async (req, res) => {
@@ -87,6 +88,39 @@ const updateOrderStatus = async (req, res) => {
     return res.status(400).json({ error: `Invalid status. Must be one of: ${VALID_STATUSES.join(", ")}` });
   }
 
+  // If marking as Delivered, require a delivery proof image
+  if (status === "Delivered") {
+    if (!req.file) {
+      return res.status(400).json({ error: "Delivery proof image is required when marking as Delivered" });
+    }
+    try {
+      const blob = await put(
+        `kabba-deliveries/delivery-${id}-${Date.now()}`,
+        req.file.buffer,
+        {
+          access: "public",
+          addRandomSuffix: true,
+          contentType: req.file.mimetype || "image/jpeg",
+        }
+      );
+
+      const result = await pool.query(
+        "UPDATE orders SET status = $1, delivery_proof_url = $2 WHERE id = $3 RETURNING *",
+        [status, blob.url, id]
+      );
+
+      if (!result.rows.length) {
+        return res.status(404).json({ error: "Order not found" });
+      }
+
+      return res.json({ order: result.rows[0] });
+    } catch (err) {
+      console.error("[updateOrderStatus ERROR] Delivery proof upload failed:", err.message);
+      return res.status(500).json({ error: "Failed to upload delivery proof image" });
+    }
+  }
+
+  // For all other statuses, just update normally
   try {
     const result = await pool.query(
       "UPDATE orders SET status = $1 WHERE id = $2 RETURNING *",
@@ -114,9 +148,9 @@ const trackOrder = async (req, res) => {
   try {
     let result;
     if (tx_ref) {
-      result = await pool.query("SELECT id, name, email, status, total, tx_ref, created_at FROM orders WHERE tx_ref = $1", [tx_ref]);
+      result = await pool.query("SELECT id, name, email, status, total, tx_ref, delivery_proof_url, created_at FROM orders WHERE tx_ref = $1", [tx_ref]);
     } else {
-      result = await pool.query("SELECT id, name, email, status, total, tx_ref, created_at FROM orders WHERE email = $1 ORDER BY id DESC", [email]);
+      result = await pool.query("SELECT id, name, email, status, total, tx_ref, delivery_proof_url, created_at FROM orders WHERE email = $1 ORDER BY id DESC", [email]);
     }
 
     if (!result.rows.length) {
