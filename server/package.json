@@ -8,6 +8,7 @@
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon index.js",
+    "build": "node -e \"console.log('Kabba Designs API — no build step needed')\"",
     "test": "echo \"Error: no test specified\" && exit 1",
     "seed": "node seed-samples.js",
     "seed:sql": "psql \"$DATABASE_URL\" -f seed-output.sql"
