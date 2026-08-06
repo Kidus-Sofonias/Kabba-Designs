@@ -49,9 +49,23 @@ const pgSchema = `
   CREATE TABLE IF NOT EXISTS orders_temp (
     id SERIAL PRIMARY KEY,
     tx_ref TEXT UNIQUE,
+    name TEXT,
+    email TEXT,
+    phone TEXT,
+    address TEXT,
+    items TEXT DEFAULT '[]',
+    total REAL DEFAULT 0,
     paid INTEGER DEFAULT 0,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
   );
+
+  -- Migrate existing orders_temp tables that lack new columns
+  ALTER TABLE orders_temp ADD COLUMN IF NOT EXISTS name TEXT;
+  ALTER TABLE orders_temp ADD COLUMN IF NOT EXISTS email TEXT;
+  ALTER TABLE orders_temp ADD COLUMN IF NOT EXISTS phone TEXT;
+  ALTER TABLE orders_temp ADD COLUMN IF NOT EXISTS address TEXT;
+  ALTER TABLE orders_temp ADD COLUMN IF NOT EXISTS items TEXT DEFAULT '[]';
+  ALTER TABLE orders_temp ADD COLUMN IF NOT EXISTS total REAL DEFAULT 0;
 
   CREATE TABLE IF NOT EXISTS events (
     id SERIAL PRIMARY KEY,

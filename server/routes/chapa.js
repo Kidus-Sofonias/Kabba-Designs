@@ -39,12 +39,23 @@ router.post("/create-payment", async (req, res) => {
 
     const tx_ref = crypto.randomUUID();
 
+    // Pre-store order details in orders_temp so the webhook can retrieve them
+    // without relying on Chapa's meta payload (which must be string-only).
+    await pool.query(
+      `INSERT INTO orders_temp (tx_ref, name, email, phone, address, items, total)
+       VALUES ($1, $2, $3, $4, $5, $6, $7)
+       ON CONFLICT (tx_ref) DO UPDATE SET
+         name = $2, email = $3, phone = $4, address = $5, items = $6, total = $7`,
+      [tx_ref, name, email, phone, address, JSON.stringify(items), total]
+    );
+
     const callbackUrl =
       process.env.CHAPA_CALLBACK_URL ||
-      `https://kabba-designs-server.onrender.com/api/chapa/webhook`;
+      `https://kabba-designs.onrender.com/api/chapa/webhook`;
     const returnUrlBase =
-      process.env.CHAPA_RETURN_URL || `https://kabbadesign.com.et/success`;
+      process.env.CHAPA_RETURN_URL || `https://kabba-designs.vercel.app/success`;
 
+    // Chapa meta values MUST all be strings — complex objects crash their widget.
     const chapaRes = await axios.post(
       "https://api.chapa.co/v1/transaction/initialize",
       {
@@ -61,12 +72,7 @@ router.post("/create-payment", async (req, res) => {
           description: "Payment for order",
         },
         meta: {
-          name,
-          email,
-          phone,
-          address,
-          items: JSON.stringify(items),
-          total,
+          order_ref: tx_ref,
         },
       },
       {
@@ -82,6 +88,9 @@ router.post("/create-payment", async (req, res) => {
     });
   } catch (error) {
     console.error("Chapa Init Error:", error.message);
+    if (error.response?.data) {
+      console.error("Chapa API response:", JSON.stringify(error.response.data));
+    }
     res.status(500).json({ error: "Payment initiation failed" });
   }
 });
@@ -116,32 +125,32 @@ router.post("/webhook", verifyChapaSignature, async (req, res) => {
 
   if (event.event === "charge.success") {
     try {
-      const {
-        tx_ref,
-        email,
-        first_name: name,
-        phone: phone_number,
-        customization,
-        meta,
-      } = event;
+      const { tx_ref } = event;
 
-      if (!meta || !meta.items) {
-        console.error("Missing meta.items or meta fields");
+      // Read order details from orders_temp (stored during create-payment)
+      const tempResult = await pool.query(
+        "SELECT * FROM orders_temp WHERE tx_ref = $1",
+        [tx_ref]
+      );
+
+      if (tempResult.rows.length === 0) {
+        console.error("Webhook: no orders_temp found for tx_ref:", tx_ref);
         return res.sendStatus(400);
       }
 
+      const temp = tempResult.rows[0];
       let items;
       try {
-        items = JSON.parse(meta.items);
+        items = JSON.parse(temp.items || "[]");
       } catch (err) {
-        console.error("Error parsing items:", meta.items, err.message);
+        console.error("Error parsing items from orders_temp:", temp.items, err.message);
         return res.sendStatus(400);
       }
 
       const insertResult = await pool.query(
         `INSERT INTO orders (name, email, phone, address, total, tx_ref, product, paid, created_at)
           VALUES ($1, $2, $3, $4, $5, $6, $7, 1, NOW()) RETURNING id`,
-        [meta.name, meta.email, meta.phone, meta.address, meta.total, tx_ref, meta.items]
+        [temp.name, temp.email, temp.phone, temp.address, temp.total, tx_ref, temp.items]
       );
 
       const orderId = insertResult.rows[0].id;
@@ -159,18 +168,25 @@ router.post("/webhook", verifyChapaSignature, async (req, res) => {
         );
       }
 
-      // Send order notification via FormSubmit
-      const formData = new URLSearchParams();
-      formData.append("_replyto", meta.email);
-      formData.append("name", meta.name);
-      formData.append(
-        "message",
-        `New order for ${meta.name}\nTotal: ${meta.total} ETB\nTx Ref: ${tx_ref}`
-      );
+      // Mark orders_temp as paid
+      await pool.query("UPDATE orders_temp SET paid = 1 WHERE tx_ref = $1", [tx_ref]);
 
-      await axios.post("https://formsubmit.co/mldnrbnl", formData, {
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      });
+      // Send order notification via FormSubmit
+      try {
+        const formData = new URLSearchParams();
+        formData.append("_replyto", temp.email);
+        formData.append("name", temp.name);
+        formData.append(
+          "message",
+          `New order for ${temp.name}\nTotal: ${temp.total} ETB\nTx Ref: ${tx_ref}`
+        );
+
+        await axios.post("https://formsubmit.co/mldnrbnl", formData, {
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        });
+      } catch (emailErr) {
+        console.error("Email notification failed (non-fatal):", emailErr.message);
+      }
 
       res.sendStatus(200);
     } catch (err) {
