@@ -1,45 +1,80 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
 import api from "../../api/axios";
+import "../../Components/Admin/Admin.css";
 
-function AdminLogin() {
+export default function AdminLogin() {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   const handleLogin = async (e) => {
     e.preventDefault();
+    setError("");
+    setLoading(true);
+
     try {
       const { data } = await api.post("/admin/login", { email, password });
       localStorage.setItem("token", data.token);
       navigate("/admin/dashboard");
     } catch (err) {
-      alert(err.response?.data?.error || "Login failed");
+      setError(err.response?.data?.error || "Invalid credentials. Please try again.");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="container py-5">
-      <h3 className="mb-4 text-center">Admin Login</h3>
-      <form onSubmit={handleLogin} className="col-md-6 mx-auto">
-        <input
-          type="email"
-          className="form-control mb-3"
-          placeholder="Email"
-          onChange={(e) => setEmail(e.target.value)}
-        />
-        <input
-          type="password"
-          className="form-control mb-3"
-          placeholder="Password"
-          onChange={(e) => setPassword(e.target.value)}
-        />
-        <button className="btn btn-warning w-100" type="submit">
-          Login
-        </button>
-      </form>
+    <div className="login-page">
+      <div className="login-card">
+        <div className="login-logo">K</div>
+        <h1 className="login-title">Welcome Back</h1>
+        <p className="login-subtitle">Sign in to manage your store</p>
+
+        {error && <div className="login-error">{error}</div>}
+
+        <form className="login-form" onSubmit={handleLogin}>
+          <div className="login-input-group">
+            <label>Email</label>
+            <input
+              className="login-input"
+              type="email"
+              placeholder="admin@kabbadesigns.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              autoFocus
+            />
+          </div>
+          <div className="login-input-group">
+            <label>Password</label>
+            <input
+              className="login-input"
+              type="password"
+              placeholder="Enter your password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+          </div>
+          <button className="login-btn" type="submit" disabled={loading}>
+            {loading ? (
+              <span style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 8 }}>
+                <span className="admin-spinner" style={{ borderTopColor: "var(--on-accent)" }} />
+                Signing in…
+              </span>
+            ) : (
+              "Sign In"
+            )}
+          </button>
+        </form>
+
+        <Link to="/" className="login-back">
+          ← Back to store
+        </Link>
+      </div>
     </div>
   );
 }
-
-export default AdminLogin;
