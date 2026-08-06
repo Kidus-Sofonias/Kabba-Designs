@@ -12,7 +12,9 @@ export default function Orders() {
 
   useEffect(() => {
     api
-      .get("/orders")
+      .get("/orders", {
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+      })
       .then(({ data }) => setOrders(Array.isArray(data) ? data : []))
       .catch(() => setOrders([]))
       .finally(() => setLoading(false));

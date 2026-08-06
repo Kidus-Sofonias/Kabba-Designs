@@ -734,7 +734,9 @@ function OrderManager() {
   useEffect(() => {
     (async () => {
       try {
-        const { data } = await api.get("/orders");
+        const { data } = await api.get("/orders", {
+          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+        });
         setOrders(Array.isArray(data) ? data : []);
       } catch {
         setOrders([]);

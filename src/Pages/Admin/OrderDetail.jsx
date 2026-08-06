@@ -11,7 +11,9 @@ export default function OrderDetail() {
 
   useEffect(() => {
     api
-      .get(`/orders/${id}`)
+      .get(`/orders/${id}`, {
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+      })
       .then(({ data }) => setOrder(data))
       .catch((err) => console.error("Failed to fetch order", err))
       .finally(() => setLoading(false));
