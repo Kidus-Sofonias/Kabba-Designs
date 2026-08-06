@@ -109,6 +109,7 @@ function ProductManager({ addToast }) {
   });
   const [images, setImages] = useState([]);
   const [previews, setPreviews] = useState([]);
+  const [keptImages, setKeptImages] = useState([]); // existing image URLs to keep on edit
   const [dragOver, setDragOver] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const fileRef = useRef();
@@ -152,8 +153,10 @@ function ProductManager({ addToast }) {
       description: product.description || "",
       category: product.category || "Women",
     });
+    const existing = parseImages(product.image_urls);
     setImages([]);
-    setPreviews(parseImages(product.image_urls));
+    setPreviews(existing);
+    setKeptImages([...existing]); // track which existing URLs to keep
     setShowForm(true);
   };
 
@@ -168,7 +171,15 @@ function ProductManager({ addToast }) {
   };
 
   const removePreview = (idx) => {
-    setPreviews((prev) => prev.filter((_, i) => i !== idx));
+    setPreviews((prev) => {
+      const next = prev.filter((_, i) => i !== idx);
+      // If editing and this was an existing image (URL, not data:), remove from keptImages
+      if (editing && prev[idx] && prev[idx].startsWith("http")) {
+        setKeptImages((k) => k.filter((url) => url !== prev[idx]));
+      }
+      return next;
+    });
+    // Also remove from new images array if it was a newly added file
     if (idx < images.length) {
       setImages((prev) => prev.filter((_, i) => i !== idx));
     }
@@ -187,6 +198,10 @@ function ProductManager({ addToast }) {
     const fd = new FormData();
     Object.entries(form).forEach(([key, val]) => fd.append(key, val));
     images.forEach((img) => fd.append("images", img));
+    // When editing, send the existing image URLs to keep
+    if (editing) {
+      fd.append("existing_image_urls", JSON.stringify(keptImages));
+    }
 
     try {
       const token = localStorage.getItem("token");
@@ -512,7 +527,12 @@ function EventManager({ addToast }) {
     fd.append("start_date", form.start_date);
     fd.append("end_date", form.end_date);
     fd.append("location_link", form.location_link);
-    if (imageFile) fd.append("image", imageFile);
+    if (imageFile) {
+      fd.append("image", imageFile);
+    } else if (editing && editing.image_url) {
+      // Keep the existing image if no new file was selected
+      fd.append("existing_image_url", editing.image_url);
+    }
 
     try {
       const token = localStorage.getItem("token");

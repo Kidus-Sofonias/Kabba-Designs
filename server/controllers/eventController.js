@@ -42,10 +42,10 @@ exports.addEvent = async (req, res) => {
 exports.updateEvent = async (req, res) => {
   try {
     const { id } = req.params;
-    const { name, start_date, end_date, location_link } = req.body;
+    const { name, start_date, end_date, location_link, existing_image_url } = req.body;
 
-    // If a new image was uploaded, upload it to Blob
-    let imageUrl = null;
+    // If a new image was uploaded, use it; otherwise keep the existing one
+    let imageUrl = existing_image_url || null;
     if (req.file) {
       const uploaded = await put(
         `kabba-events/${req.file.originalname || "event.jpg"}`,
@@ -59,13 +59,8 @@ exports.updateEvent = async (req, res) => {
       imageUrl = uploaded.url;
     }
 
-    const sql = imageUrl
-      ? `UPDATE events SET name=$1, date=$2, end_date=$3, location_link=$4, image_url=$5 WHERE id=$6 RETURNING id`
-      : `UPDATE events SET name=$1, date=$2, end_date=$3, location_link=$4 WHERE id=$5 RETURNING id`;
-
-    const values = imageUrl
-      ? [name, start_date, end_date, location_link, imageUrl, id]
-      : [name, start_date, end_date, location_link, id];
+    const sql = `UPDATE events SET name=$1, date=$2, end_date=$3, location_link=$4, image_url=$5 WHERE id=$6 RETURNING id`;
+    const values = [name, start_date, end_date, location_link, imageUrl, id];
 
     const result = await pool.query(sql, values);
     if (result.rowCount === 0) return res.status(404).json({ error: "Event not found" });

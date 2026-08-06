@@ -151,10 +151,20 @@ exports.getProductById = async (req, res) => {
 
 exports.updateProduct = async (req, res) => {
   const id = req.params.id;
-  const { name, price_birr, price_dollar, quantity, description, category } = req.body;
+  const { name, price_birr, price_dollar, quantity, description, category, existing_image_urls } = req.body;
 
+  // Start with the existing images the frontend says to keep
   let imageUrls = [];
+  if (existing_image_urls) {
+    try {
+      const parsed = JSON.parse(existing_image_urls);
+      if (Array.isArray(parsed)) imageUrls = parsed;
+    } catch {
+      /* ignore bad JSON */
+    }
+  }
 
+  // Upload any new images and append them
   if (req.files && req.files.length > 0) {
     try {
       for (const file of req.files) {
@@ -172,13 +182,9 @@ exports.updateProduct = async (req, res) => {
     }
   }
 
-  let sql = "UPDATE products SET name=$1, price_birr=$2, price_dollar=$3, quantity=$4, description=$5, category=$6";
-  const values = [name, price_birr, price_dollar, quantity, description, category];
+  let sql = "UPDATE products SET name=$1, price_birr=$2, price_dollar=$3, quantity=$4, description=$5, category=$6, image_urls=$7";
+  const values = [name, price_birr, price_dollar, quantity, description, category, JSON.stringify(imageUrls)];
 
-  if (imageUrls.length) {
-    sql += ", image_urls=$7";
-    values.push(JSON.stringify(imageUrls));
-  }
   sql += " WHERE id=$" + (values.length + 1);
   values.push(id);
 
