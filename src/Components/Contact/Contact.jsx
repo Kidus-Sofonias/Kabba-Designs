@@ -15,14 +15,14 @@ function Contact() {
   return (
     <section className="contact-section py-5">
       <div className="container">
-        <h2 className="text-center mb-4">
+        <h2 className="text-center mb-4" data-aos="fade-up">
           CONTACT <span className="highlight">US</span>
         </h2>
         <hr className="underline mb-5" />
 
         <div className="row">
           {/* LEFT - Info */}
-          <div className="col-md-6 mb-4">
+          <div className="col-md-6 mb-4" data-aos="fade-right" data-aos-delay="100">
             <p>
               If you are interested in our products and want to contact us,
               click on the links below.
@@ -71,7 +71,7 @@ function Contact() {
           </div>
 
           {/* RIGHT - Form */}
-          <div className="col-md-6">
+          <div className="col-md-6" data-aos="fade-left" data-aos-delay="200">
             {state.succeeded ? (
               <p className="alert alert-success">
                 Thanks for reaching out! We’ll respond shortly.

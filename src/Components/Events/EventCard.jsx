@@ -32,7 +32,7 @@ function EventCard({ event = {} }) {
   const imageSrc = imageUrl(event.image_url);
 
   return (
-    <div className="event-card">
+    <div className="event-card hover-lift" data-aos="fade-up">
       <a
         href={event.location_link}
         target="_blank"

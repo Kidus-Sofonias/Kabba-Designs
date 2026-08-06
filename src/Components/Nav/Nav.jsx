@@ -1,13 +1,10 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { FaMoon, FaSun } from "react-icons/fa";
 import logo from "../../assets/images/icons/logo.png";
 import "./Nav.css";
 import { CartIcon } from "../Cart/CartIcon";
-import { useTheme } from "../../context/ThemeContext";
 
 function Nav() {
-  const { theme, toggle } = useTheme();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
@@ -65,14 +62,6 @@ function Nav() {
 
           {/* Right actions */}
           <div className="kabba-nav-actions">
-            <button
-              className="kabba-theme-toggle"
-              onClick={toggle}
-              aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
-            >
-              {theme === "dark" ? <FaSun size={16} /> : <FaMoon size={16} />}
-            </button>
-
             <Link to="/cart" className="kabba-nav-cart">
               <CartIcon />
             </Link>
@@ -131,12 +120,6 @@ function Nav() {
             <span>🛒 Cart</span>
             <span className="kabba-mobile-arrow">→</span>
           </Link>
-          <div className="kabba-mobile-theme-row">
-            <button className="kabba-theme-toggle" onClick={toggle}>
-              {theme === "dark" ? <FaSun size={16} /> : <FaMoon size={16} />}
-              <span>{theme === "dark" ? "Light Mode" : "Dark Mode"}</span>
-            </button>
-          </div>
         </div>
       </div>
     </>

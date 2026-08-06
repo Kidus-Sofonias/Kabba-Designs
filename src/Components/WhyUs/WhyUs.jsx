@@ -6,11 +6,11 @@ function WhyUs() {
 return (
     <section className="whyus-section py-5">
     <div className="container text-center">
-        <h2 className="section-title">WHY US?</h2>
+        <h2 className="section-title" data-aos="fade-up">WHY US?</h2>
         <hr className="underline" />
 
         <div className="row mt-5 text-start">
-        <div className="col-md-6 col-lg-3 mb-4">
+        <div className="col-md-6 col-lg-3 mb-4" data-aos="fade-up" data-aos-delay="0">
             <div className="whyus-item">
             <FaHandsHelping className="whyus-icon" />
             <h5 className="fw-bold">Authentic Craftsmanship</h5>
@@ -21,7 +21,7 @@ return (
             </div>
         </div>
 
-        <div className="col-md-6 col-lg-3 mb-4">
+        <div className="col-md-6 col-lg-3 mb-4" data-aos="fade-up" data-aos-delay="100">
             <div className="whyus-item">
             <FaGlobeAfrica className="whyus-icon" />
             <h5 className="fw-bold">Cultural Connection</h5>
@@ -32,7 +32,7 @@ return (
             </div>
         </div>
 
-        <div className="col-md-6 col-lg-3 mb-4">
+        <div className="col-md-6 col-lg-3 mb-4" data-aos="fade-up" data-aos-delay="200">
             <div className="whyus-item">
             <FaGem className="whyus-icon" />
             <h5 className="fw-bold">Exclusive Designs</h5>
@@ -43,7 +43,7 @@ return (
             </div>
         </div>
 
-        <div className="col-md-6 col-lg-3 mb-4">
+        <div className="col-md-6 col-lg-3 mb-4" data-aos="fade-up" data-aos-delay="300">
             <div className="whyus-item">
             <FaAward className="whyus-icon" />
             <h5 className="fw-bold">Trusted Brand</h5>

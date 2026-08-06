@@ -1,55 +1,51 @@
 /* ============================================================
-   Kabba Designs — Theme
+   Kabba Designs — Theme (Dark Mode Only)
    A warm, premium "African luxury" palette:
    ebony/espresso surfaces, sand text, gold + terracotta accents.
-   Dark is the default; a warm light theme is available via
-   the [data-theme="light"] attribute (set by ThemeContext).
    ============================================================ */
 
 :root,
 [data-theme="dark"] {
-  --bg: #151210;
-  --bg-soft: #1d1814;
-  --panel: #221c17;
-  --panel-2: #2b221a;
+  --bg: #0f0d0b;
+  --bg-soft: #1a1613;
+  --panel: #1e1a16;
+  --panel-2: #272119;
   --text: #f3e9d7;
-  --muted: #a8987f;
-  --accent: #d4a24e; /* gold */
+  --muted: #9a8a6f;
+  --accent: #d4a24e;
   --accent-strong: #e3b465;
-  --accent-2: #c0563b; /* terracotta */
-  --on-accent: #221703;
+  --accent-2: #c0563b;
+  --on-accent: #1a1205;
   --glass: rgba(255, 255, 255, 0.03);
-  --shadow: 0 6px 18px rgba(0, 0, 0, 0.55);
-  --nav-bg: rgba(21, 18, 16, 0.92);
-  --border: rgba(212, 162, 78, 0.25);
-}
-
-[data-theme="light"] {
-  --bg: #f6efe2;
-  --bg-soft: #efe5d1;
-  --panel: #fffaf0;
-  --panel-2: #f6ecd7;
-  --text: #2d2317;
-  --muted: #7d6d55;
-  --accent: #a87b1f;
-  --accent-strong: #b8892c;
-  --accent-2: #b04a2c;
-  --on-accent: #fffaf0;
-  --glass: rgba(0, 0, 0, 0.03);
-  --shadow: 0 6px 18px rgba(90, 60, 20, 0.12);
-  --nav-bg: rgba(246, 239, 226, 0.94);
-  --border: rgba(168, 123, 31, 0.3);
+  --shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
+  --nav-bg: rgba(15, 13, 11, 0.95);
+  --border: rgba(212, 162, 78, 0.18);
+  --border-strong: rgba(212, 162, 78, 0.35);
+  --glow: rgba(212, 162, 78, 0.12);
 }
 
 html,
 body,
 #root {
-  background: linear-gradient(180deg, var(--bg), var(--bg-soft));
+  background: var(--bg);
   color: var(--text);
-  transition: background 300ms ease, color 200ms ease;
+  scroll-behavior: smooth;
 }
 
-/* Flex shell so the footer always sits at the bottom of the page */
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ── Selection ── */
+::selection {
+  background: var(--accent);
+  color: var(--on-accent);
+}
+
+/* ── Flex shell ── */
 .app-shell {
   display: flex;
   flex-direction: column;
@@ -60,34 +56,51 @@ body,
   flex: 1 0 auto;
 }
 
+/* ── Cards ── */
 .card,
 .navbar,
 .footer,
 .modal-content {
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), transparent),
-    var(--panel);
+  background: var(--panel);
   color: var(--text);
   box-shadow: var(--shadow);
 }
 
-/* ---------- Buttons ---------- */
-
+/* ── Buttons ── */
 .btn-accent {
-  background: linear-gradient(90deg, var(--accent), var(--accent-2));
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
   color: var(--on-accent);
   border: 0;
   font-weight: 600;
-  transition: filter 0.2s ease, transform 0.15s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-accent::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.15), transparent);
+  opacity: 0;
+  transition: opacity 0.3s;
 }
 
 .btn-accent:hover,
 .btn-accent:focus {
-  filter: brightness(1.08);
   color: var(--on-accent);
-  transform: translateY(-1px);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(212, 162, 78, 0.3);
 }
 
-/* Re-skin Bootstrap's yellow warning buttons with the brand gold */
+.btn-accent:hover::before {
+  opacity: 1;
+}
+
+.btn-accent:active {
+  transform: translateY(0);
+}
+
 .btn-warning {
   --bs-btn-bg: var(--accent);
   --bs-btn-border-color: var(--accent);
@@ -98,102 +111,201 @@ body,
   --bs-btn-color: var(--on-accent);
   --bs-btn-hover-color: var(--on-accent);
   --bs-btn-active-color: var(--on-accent);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn-warning:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(212, 162, 78, 0.3);
 }
 
 .btn-outline-light {
   --bs-btn-color: var(--text);
-  --bs-btn-border-color: var(--muted);
+  --bs-btn-border-color: var(--border);
   --bs-btn-hover-bg: var(--accent);
   --bs-btn-hover-border-color: var(--accent);
   --bs-btn-hover-color: var(--on-accent);
+  transition: all 0.3s ease;
 }
 
-/* ---------- Navbar ---------- */
-
-.navbar {
-  background-color: var(--nav-bg) !important;
-  backdrop-filter: blur(10px);
-}
-
-.theme-toggle {
-  background: transparent;
-  border: 1px solid var(--border);
-  border-radius: 50%;
-  color: var(--accent);
-  width: 36px;
-  height: 36px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1rem;
-  transition: background 0.2s ease, color 0.2s ease, transform 0.15s ease;
-}
-
-.theme-toggle:hover {
-  background: var(--accent);
-  color: var(--on-accent);
-  transform: rotate(15deg);
-}
-
-[data-theme="light"] .navbar-dark {
-  --bs-navbar-color: var(--muted);
-  --bs-navbar-hover-color: var(--accent);
-  --bs-navbar-active-color: var(--accent);
-  --bs-navbar-brand-color: var(--text);
-}
-
-/* ---------- Forms / misc ---------- */
-
+/* ── Forms ── */
 .form-control,
 .form-control:focus {
-  background-color: var(--panel);
+  background-color: var(--panel-2);
   color: var(--text);
   border-color: var(--border);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.form-control:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--glow);
 }
 
 .form-control::placeholder {
   color: var(--muted);
 }
 
+/* ── Tables ── */
 .table-dark {
   --bs-table-bg: var(--panel);
   --bs-table-color: var(--text);
   --bs-table-border-color: var(--border);
 }
 
+/* ── Utilities ── */
 .muted {
   color: var(--muted);
 }
 
 .glass {
   background: var(--glass);
-  backdrop-filter: blur(6px);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
 }
 
-/* Custom scrollbar (WebKit) */
+/* ── Scrollbar ── */
 ::-webkit-scrollbar {
-  width: 10px;
+  width: 8px;
 }
 ::-webkit-scrollbar-track {
   background: var(--bg);
 }
 ::-webkit-scrollbar-thumb {
   background: var(--accent);
-  border-radius: 5px;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-strong);
 }
 
-/* subtle entrance animation */
-@keyframes subtleRise {
-  from {
-    opacity: 0;
-    transform: translateY(8px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+/* ============================================================
+   Animations & Transitions
+   ============================================================ */
+
+/* ── Page entrance ── */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
-.entrance {
-  animation: subtleRise 520ms cubic-bezier(0.2, 0.9, 0.3, 1) both;
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideInLeft {
+  from { opacity: 0; transform: translateX(-32px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes slideInRight {
+  from { opacity: 0; transform: translateX(32px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.92); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+@keyframes glow {
+  0%, 100% { box-shadow: 0 0 20px rgba(212, 162, 78, 0.15); }
+  50% { box-shadow: 0 0 40px rgba(212, 162, 78, 0.3); }
+}
+
+/* ── Utility animation classes ── */
+.animate-fade-in {
+  animation: fadeIn 0.6s ease both;
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+
+.animate-slide-left {
+  animation: slideInLeft 0.6s cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+
+.animate-slide-right {
+  animation: slideInRight 0.6s cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+
+.animate-scale-in {
+  animation: scaleIn 0.5s cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+.animate-glow {
+  animation: glow 3s ease-in-out infinite;
+}
+
+/* ── Stagger delays ── */
+.delay-1 { animation-delay: 0.1s; }
+.delay-2 { animation-delay: 0.2s; }
+.delay-3 { animation-delay: 0.3s; }
+.delay-4 { animation-delay: 0.4s; }
+.delay-5 { animation-delay: 0.5s; }
+.delay-6 { animation-delay: 0.6s; }
+
+/* ── Hover lift ── */
+.hover-lift {
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s ease;
+}
+.hover-lift:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4);
+}
+
+/* ── Link hover ── */
+a {
+  transition: color 0.2s ease, opacity 0.2s ease;
+}
+
+/* ── Image hover ── */
+.img-hover-zoom {
+  overflow: hidden;
+}
+.img-hover-zoom img {
+  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.img-hover-zoom:hover img {
+  transform: scale(1.08);
+}
+
+/* ── Skeleton loading ── */
+.skeleton {
+  background: linear-gradient(90deg, var(--panel) 25%, var(--panel-2) 50%, var(--panel) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+  border-radius: 8px;
+}
+
+/* ── Section spacing ── */
+.section-padding {
+  padding: 80px 0;
+}
+
+@media (max-width: 768px) {
+  .section-padding {
+    padding: 48px 0;
+  }
 }

@@ -37,9 +37,11 @@ const categories = [
 function CategoryCards() {
 return (
     <section className="category-grid container my-5">
+    <h2 className="text-center mb-2" data-aos="fade-up">OUR COLLECTIONS</h2>
+    <hr className="mb-5" style={{ width: 100, height: 3, background: 'var(--accent)', border: 'none', margin: '0 auto 2rem' }} />
     <div className="row g-4">
         {categories.map((cat, i) => (
-        <div className="col-md-6 col-lg-6" key={i}>
+        <div className="col-md-6 col-lg-6" key={i} data-aos="fade-up" data-aos-delay={i * 100}>
             <div
             className="category-card"
             style={{ backgroundImage: `url(${cat.image})` }}

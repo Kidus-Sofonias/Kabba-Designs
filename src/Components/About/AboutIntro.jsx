@@ -11,7 +11,7 @@ function AboutIntro() {
     <section className="about-intro container my-5">
       <div className="row align-items-center">
         {/* LEFT - Images */}
-        <div className="col-lg-5 mb-4 mb-lg-0">
+        <div className="col-lg-5 mb-4 mb-lg-0" data-aos="fade-right" data-aos-duration="800">
           <div className="image-stack">
             <img src={img1} alt="Founder" className="img-main" />
             <img src={img2} alt="Jewelry" className="img-overlay" />
@@ -20,7 +20,7 @@ function AboutIntro() {
         </div>
 
         {/* RIGHT - Text */}
-        <div className="col-lg-7">
+        <div className="col-lg-7" data-aos="fade-left" data-aos-duration="800" data-aos-delay="200">
           <h2 className="fw-bold">ABOUT KABBA</h2>
           <p>
             Discover Kabba, your go-to brand for authentic African-inspired

@@ -21,6 +21,7 @@ const COMPANY_LINKS = [
   { label: "About Us", to: "/about" },
   { label: "Products", to: "/products" },
   { label: "Events", to: "/events" },
+  { label: "Track Order", to: "/track-order" },
   { label: "Contact", to: "/contact" },
 ];
 
@@ -46,7 +47,7 @@ function Footer() {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="footer">
+    <footer className="footer" data-aos="fade-up" data-aos-duration="600">
       <div className="container py-5">
         <div className="row g-4">
           {/* Brand */}

@@ -61,7 +61,7 @@ function Home() {
       </div>
       {/* Upcoming Events Section */}
       <section className="home-upcoming-events my-5">
-        <h2 className="text-center">Upcoming Events</h2>
+        <h2 className="text-center" data-aos="fade-up">Upcoming Events</h2>
         <hr className="mb-4 home-underline" />
         <div
           className="event-cards-row"
