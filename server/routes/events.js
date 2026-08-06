@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const multer = require("multer");
 const verifyToken = require("../middleware/auth");
-const { addEvent, getEvents } = require("../controllers/eventController");
+const { addEvent, getEvents, updateEvent, deleteEvent } = require("../controllers/eventController");
 
 // Keep uploads in memory — files are streamed straight to Vercel Blob.
 const upload = multer({
@@ -12,5 +12,7 @@ const upload = multer({
 
 router.get("/", getEvents);
 router.post("/", verifyToken, upload.single("image"), addEvent);
+router.put("/:id", verifyToken, upload.single("image"), updateEvent);
+router.delete("/:id", verifyToken, deleteEvent);
 
 module.exports = router;
