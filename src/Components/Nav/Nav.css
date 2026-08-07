@@ -131,6 +131,37 @@
   transition: all 0.2s ease;
 }
 
+/* Cart icon (CSS-driven so it scales with the nav button on small screens) */
+.kabba-cart-icon {
+  position: relative;
+  display: inline-block;
+  width: 40px;
+  height: 40px;
+}
+
+.kabba-cart-svg {
+  display: block;
+  margin: 0 auto;
+  width: 36px;
+  height: 36px;
+}
+
+.kabba-cart-badge {
+  position: absolute;
+  top: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--accent);
+  color: var(--on-accent);
+  border-radius: 50%;
+  padding: 0 6px;
+  font-size: 16px;
+  font-weight: bold;
+  z-index: 2;
+  line-height: 1.6;
+  white-space: nowrap;
+}
+
 .kabba-nav-cart:hover {
   border-color: var(--accent);
   color: var(--accent);
@@ -343,6 +374,23 @@
   .kabba-nav-cart {
     width: 36px;
     height: 36px;
+  }
+
+  .kabba-nav-cart .kabba-cart-icon {
+    width: 30px;
+    height: 30px;
+  }
+
+  .kabba-nav-cart .kabba-cart-svg {
+    width: 26px;
+    height: 26px;
+  }
+
+  .kabba-nav-cart .kabba-cart-badge {
+    top: -10px;
+    font-size: 12px;
+    line-height: 1.5;
+    padding: 0 5px;
   }
 
   .kabba-hamburger {

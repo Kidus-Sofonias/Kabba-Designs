@@ -1,3 +1,9 @@
+/* Clamp horizontal overflow at the root: AOS entrance animations
+   (fade-right / fade-left) translate elements 100px sideways, which
+   otherwise expands the page beyond the viewport and breaks the
+   fixed navbar's alignment on the home page (and About/Women/Children/Men).
+   overflow-x must be set on html too — body alone does not clip the viewport. */
+html,
 body {
   margin: 0;
   padding: 0;

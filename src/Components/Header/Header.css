@@ -53,8 +53,9 @@
 
 /* ── Tablet ── */
 @media (max-width: 992px) {
+  /* Navbar stays 70px tall until 576px, so keep the hero clear of it */
   .custom-carousel {
-    margin-top: 60px;
+    margin-top: 70px;
   }
 
   .carousel-slide img {
